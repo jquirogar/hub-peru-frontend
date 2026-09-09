@@ -1,0 +1,39 @@
+{
+  "name": "@geb/hub-peru",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HUB Perú — Plataforma de Gestión de Novedades y Solicitudes (Grupo Energía Bogotá, filial Cálidda)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@azure/msal-browser": "^3.20.0",
+    "@azure/msal-react": "^2.0.22",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@geb/api-client": "workspace:*",
+    "@geb/auth": "workspace:*",
+    "@geb/offline": "workspace:*",
+    "@geb/ui": "workspace:*",
+    "@mui/material": "^5.16.0",
+    "@mui/x-date-pickers": "^7.29.0",
+    "dayjs": "^1.11.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@geb/eslint-config": "workspace:*",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.21"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "hub-peru-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HUB Perú — implementación de la app (Grupo Energía Bogotá, filial Cálidda). Las librerías @geb/* viven en el submódulo libs/geb-frontend-libs.",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "scripts": {
+    "build:libs": "pnpm --filter \"./libs/geb-frontend-libs/packages/*\" run build",
+    "postinstall": "pnpm run build:libs",
+    "dev": "pnpm --filter @geb/hub-peru run dev",
+    "build": "pnpm run build:libs && pnpm --filter @geb/hub-peru run build",
+    "typecheck": "pnpm --filter @geb/hub-peru run typecheck"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@azure/msal-react": {
+        "peerDependencies": {
+          "@types/react": "*"
+        },
+        "peerDependenciesMeta": {
+          "@types/react": {
+            "optional": true
+          }
+        }
+      }
+    }
+  }
+}
