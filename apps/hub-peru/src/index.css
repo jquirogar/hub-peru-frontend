@@ -1,0 +1,8 @@
+/* GebAppLayout usa un layout flex de altura completa (sidebar + header + main) —
+   necesita que toda la cadena hasta la raíz tenga altura real, no solo la del
+   contenido, o el Drawer navy queda cortado a media pantalla. */
+html,
+body,
+#root {
+  height: 100%;
+}
