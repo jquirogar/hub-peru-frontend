@@ -99,7 +99,7 @@ function AppShell(): ReactNode {
               nombre: usuario.nombre,
               tenant: usuario.tenant,
               roles: usuario.roles,
-              rolEtiqueta: usuario.roles[0] ? etiquetaRol(usuario.roles[0]) : undefined
+              rol: usuario.roles[0] ? etiquetaRol(usuario.roles[0]) : undefined
             }
           : undefined
       }
