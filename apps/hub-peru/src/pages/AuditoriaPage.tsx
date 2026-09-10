@@ -1,19 +1,12 @@
 import type { ReactNode } from "react";
 
 import { useRolUi } from "@geb/auth";
-import { GebAuditoriaNovedades, GebEmptyState } from "@geb/ui";
+import { GebAuditoriaNovedades } from "@geb/ui";
+
+import { resolverRolNovedades } from "../lib/rolUiFallback";
 
 export function AuditoriaPage(): ReactNode {
   const { rolActivo } = useRolUi();
 
-  if (!rolActivo) {
-    return (
-      <GebEmptyState
-        titulo="Sin acceso a Auditoría"
-        descripcion="Se requiere rol RRHH Filial o Funcionario CSC."
-      />
-    );
-  }
-
-  return <GebAuditoriaNovedades rolActivo={rolActivo} />;
+  return <GebAuditoriaNovedades rolActivo={resolverRolNovedades(rolActivo)} />;
 }

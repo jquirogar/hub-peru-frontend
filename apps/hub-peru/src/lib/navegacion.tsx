@@ -1,4 +1,3 @@
-import { ROLES_MVP_NOVEDADES } from "@geb/auth";
 import {
   IconAssignmentOutlined,
   IconFactCheckOutlined,
@@ -8,9 +7,18 @@ import {
 } from "@geb/ui";
 
 /**
- * Navegación del sidebar de HUB Perú. Solicitudes y Colaboradores no tienen
- * dominio/backend todavía (llevan a `PlaceholderPage`) — se mantienen en el
- * menú para igualar el prototipo, sin construir su CRUD completo.
+ * Navegación del sidebar de HUB Perú.
+ *
+ * Novedades y Auditoría quedan habilitadas siempre, tengamos o no consumo de
+ * datos reales — no se filtran por `roles` (ese filtro de `GebAppLayout`
+ * depende de los claims MVP de Entra ID vía `@geb/auth`, que hoy la cuenta no
+ * trae porque no hay backend real que los emita; el gate por rol dentro de
+ * cada página lo resuelve `resolverRolNovedades` con un fallback de esta app,
+ * ver `lib/rolUiFallback.ts`).
+ *
+ * Solicitudes y Colaboradores no tienen dominio/backend todavía — se muestran
+ * deshabilitadas (`nav-item disabled` del prototipo: sin click, texto
+ * atenuado), no como placeholders navegables.
  *
  * `pendientesNovedades` alimenta el badge de "Novedades" (`GebNavItem.badge`,
  * soportado por `GebAppLayout` desde la auditoría de compliance del design
@@ -21,16 +29,24 @@ export function construirNavegacion(pendientesNovedades: number): readonly GebNa
     {
       etiqueta: "Novedades",
       ruta: "/novedades",
-      roles: ROLES_MVP_NOVEDADES,
       badge: pendientesNovedades,
       icono: <IconFolderOutlined />
     },
-    { etiqueta: "Solicitudes", ruta: "/solicitudes", icono: <IconAssignmentOutlined /> },
-    { etiqueta: "Colaboradores", ruta: "/colaboradores", icono: <IconGroupOutlined /> },
+    {
+      etiqueta: "Solicitudes",
+      ruta: "/solicitudes",
+      icono: <IconAssignmentOutlined />,
+      deshabilitado: true
+    },
+    {
+      etiqueta: "Colaboradores",
+      ruta: "/colaboradores",
+      icono: <IconGroupOutlined />,
+      deshabilitado: true
+    },
     {
       etiqueta: "Auditoría",
       ruta: "/auditoria",
-      roles: ROLES_MVP_NOVEDADES,
       icono: <IconFactCheckOutlined />
     }
   ];

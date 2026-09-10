@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRolUi } from "@geb/auth";
 import {
   GebBuzonNovedades,
-  GebEmptyState,
+  GebPageTitle,
   GebRegistrarNovedades,
   GebTabsWithBadge,
   listarNovedadesMock,
@@ -11,6 +11,7 @@ import {
 } from "@geb/ui";
 
 import { FILIALES_MOCK, TRABAJADORES_MOCK } from "../lib/datosOrganizacionMock";
+import { resolverRolNovedades } from "../lib/rolUiFallback";
 
 type TabNovedades = "registrar" | "buzon";
 
@@ -20,6 +21,7 @@ type TabNovedades = "registrar" | "buzon";
  */
 export function NovedadesPage(): ReactNode {
   const { rolActivo } = useRolUi();
+  const rol = resolverRolNovedades(rolActivo);
   const [tab, setTab] = useState<TabNovedades>("registrar");
   const [tick, setTick] = useState(0);
 
@@ -30,38 +32,33 @@ export function NovedadesPage(): ReactNode {
     return listarNovedadesMock().filter((n) => n.estado === "Registrada").length;
   }, [tick]);
 
-  if (!rolActivo) {
-    return (
-      <GebEmptyState
-        titulo="Sin acceso a Novedades"
-        descripcion="Se requiere rol RRHH Filial o Funcionario CSC."
-      />
-    );
-  }
-
   return (
-    <GebTabsWithBadge
-      value={tab}
-      onChange={(id) => setTab(id as TabNovedades)}
-      tabs={[
-        { id: "registrar", etiqueta: "Registrar Novedad" },
-        {
-          id: "buzon",
-          etiqueta: "Buzón de Novedades",
-          conteo: pendientes,
-          color: "primary"
-        }
-      ]}
-    >
-      {tab === "registrar" ? (
-        <GebRegistrarNovedades
-          rolActivo={rolActivo}
-          trabajadores={TRABAJADORES_MOCK}
-          filiales={FILIALES_MOCK}
-        />
-      ) : (
-        <GebBuzonNovedades rolActivo={rolActivo} />
-      )}
-    </GebTabsWithBadge>
+    <>
+      <GebPageTitle>Buzón de Novedades</GebPageTitle>
+      <GebTabsWithBadge
+        value={tab}
+        onChange={(id) => setTab(id as TabNovedades)}
+        tabs={[
+          { id: "registrar", etiqueta: "Registrar Novedad" },
+          {
+            id: "buzon",
+            etiqueta: "Buzón de Novedades",
+            conteo: pendientes,
+            color: "primary"
+          }
+        ]}
+      >
+        {tab === "registrar" ? (
+          <GebRegistrarNovedades
+            rolActivo={rol}
+            mostrarTitulo={false}
+            trabajadores={TRABAJADORES_MOCK}
+            filiales={FILIALES_MOCK}
+          />
+        ) : (
+          <GebBuzonNovedades rolActivo={rol} />
+        )}
+      </GebTabsWithBadge>
+    </>
   );
 }

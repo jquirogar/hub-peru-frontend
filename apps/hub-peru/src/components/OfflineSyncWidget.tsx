@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 
 import { useConectividad } from "@geb/offline";
+import { IconSync } from "@geb/ui";
 
 import { syncQueue } from "../lib/syncQueue";
 
@@ -17,10 +18,14 @@ function formatearHora(fecha: Date): string {
  * Widget de sincronización montado en `piePanelLateral` de `GebAppLayout`
  * (debajo de la navegación). El pill "En línea"/"Sin conexión" del Topbar
  * ya lo cubre `GebAppLayout` vía `online={estado !== "offline"}`.
+ *
+ * Medidas y colores exactos del prototipo (`.sync-btn` / `.sync-info`).
  */
 export function OfflineSyncWidget(): ReactNode {
   const { estado, pendientes } = useConectividad(syncQueue);
   const [ultimaSincronizacion, setUltimaSincronizacion] = useState<Date | null>(null);
+
+  const sincronizando = estado === "sincronizando";
 
   const sincronizar = async (): Promise<void> => {
     await syncQueue.drenar();
@@ -32,26 +37,44 @@ export function OfflineSyncWidget(): ReactNode {
       <button
         type="button"
         onClick={() => void sincronizar()}
-        disabled={estado === "sincronizando"}
+        disabled={sincronizando}
         style={{
           width: "100%",
-          padding: "8px 12px",
-          borderRadius: 8,
-          border: "none",
-          background: "#f2a900",
-          color: "#0b1a33",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+          padding: "5px 12px",
+          fontSize: "13px",
           fontWeight: 600,
-          cursor: estado === "sincronizando" ? "default" : "pointer"
+          lineHeight: "20px",
+          fontFamily: "inherit",
+          borderRadius: "8px",
+          border: "1px solid #f59e0b",
+          background: "#f59e0b",
+          color: "#92400e",
+          cursor: sincronizando ? "default" : "pointer",
+          opacity: sincronizando ? 0.7 : 1
         }}
       >
-        {estado === "sincronizando" ? "Sincronizando…" : "Sincronizar ahora"}
+        <IconSync size={16} />
+        {sincronizando ? "Sincronizando…" : "Sincronizar ahora"}
         {pendientes > 0 ? ` (${pendientes})` : ""}
       </button>
-      <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, marginTop: 8, marginBottom: 0 }}>
-        Última sincronización:
-        <br />
-        {ultimaSincronizacion ? formatearHora(ultimaSincronizacion) : "—"}
-      </p>
+      <div
+        style={{
+          fontSize: "11px",
+          lineHeight: 1.5,
+          color: "rgba(255,255,255,0.55)",
+          marginTop: "10px",
+          textAlign: "center"
+        }}
+      >
+        Última sincronización
+        <span style={{ display: "block" }}>
+          {ultimaSincronizacion ? formatearHora(ultimaSincronizacion) : "—"}
+        </span>
+      </div>
     </div>
   );
 }

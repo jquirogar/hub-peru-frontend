@@ -25,7 +25,6 @@ import {
   GebAppLayout,
   GebErrorState,
   GebThemeProvider,
-  GebToast,
   HubPeruBrandSplash,
   HubPeruLoginScreen,
   listarNovedadesMock,
@@ -76,7 +75,6 @@ function AppShell(): ReactNode {
   const location = useLocation();
   const navigate = useNavigate();
   const [tick, setTick] = useState(0);
-  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => suscribirNovedadesMock(() => setTick((t) => t + 1)), []);
 
@@ -91,39 +89,36 @@ function AppShell(): ReactNode {
   );
 
   return (
-    <>
-      <GebAppLayout
-        tituloApp="HUB Perú"
-        navegacion={navegacion}
-        usuario={
-          usuario
-            ? {
-                nombre: usuario.nombre,
-                tenant: usuario.tenant,
-                roles: usuario.roles,
-                rolEtiqueta: usuario.roles[0] ? etiquetaRol(usuario.roles[0]) : undefined
-              }
-            : undefined
-        }
-        rutaActual={location.pathname}
-        onNavegar={(ruta) => navigate(ruta)}
-        onLogout={() => void logout()}
-        onAyuda={() => setToast("La ayuda todavía no está disponible en este milestone.")}
-        onNotificaciones={() => setToast("Las notificaciones todavía no están disponibles en este milestone.")}
-        logoSrc={LOGO_SRC}
-        online
-        piePanelLateral={<OfflineSyncWidget />}
-      >
-        <RoutesJsx>
-          <RouteJsx path="/" element={<Navigate to="/novedades" replace />} />
-          <RouteJsx path="/novedades" element={<NovedadesPage />} />
-          <RouteJsx path="/auditoria" element={<AuditoriaPage />} />
-          <RouteJsx path="/solicitudes" element={<PlaceholderPage titulo="Solicitudes" />} />
-          <RouteJsx path="/colaboradores" element={<PlaceholderPage titulo="Colaboradores" />} />
-        </RoutesJsx>
-      </GebAppLayout>
-      <GebToast abierto={toast !== null} mensaje={toast ?? ""} onCerrar={() => setToast(null)} />
-    </>
+    <GebAppLayout
+      tituloApp="HUB Perú"
+      mostrarTituloApp={false}
+      navegacion={navegacion}
+      usuario={
+        usuario
+          ? {
+              nombre: usuario.nombre,
+              tenant: usuario.tenant,
+              roles: usuario.roles,
+              rolEtiqueta: usuario.roles[0] ? etiquetaRol(usuario.roles[0]) : undefined
+            }
+          : undefined
+      }
+      rutaActual={location.pathname}
+      onNavegar={(ruta) => navigate(ruta)}
+      onLogout={() => void logout()}
+      onNotificaciones={() => undefined}
+      logoSrc={LOGO_SRC}
+      online
+      piePanelLateral={<OfflineSyncWidget />}
+    >
+      <RoutesJsx>
+        <RouteJsx path="/" element={<Navigate to="/novedades" replace />} />
+        <RouteJsx path="/novedades" element={<NovedadesPage />} />
+        <RouteJsx path="/auditoria" element={<AuditoriaPage />} />
+        <RouteJsx path="/solicitudes" element={<PlaceholderPage titulo="Solicitudes" />} />
+        <RouteJsx path="/colaboradores" element={<PlaceholderPage titulo="Colaboradores" />} />
+      </RoutesJsx>
+    </GebAppLayout>
   );
 }
 
@@ -134,7 +129,20 @@ function AppShell(): ReactNode {
  */
 function PantallaSinSesion(): ReactNode {
   const { login } = useAuth();
-  return <HubPeruLoginScreen logoSrc={LOGO_SRC} onIniciarSesion={() => void login()} />;
+  const [cargando, setCargando] = useState(false);
+
+  const iniciarSesion = (): void => {
+    setCargando(true);
+    void login().catch(() => setCargando(false));
+  };
+
+  return (
+    <HubPeruLoginScreen
+      logoSrc={LOGO_SRC}
+      onIniciarSesion={iniciarSesion}
+      cargando={cargando}
+    />
+  );
 }
 
 function AppAutenticada(): ReactNode {
