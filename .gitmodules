@@ -1,4 +1,4 @@
 [submodule "libs/geb-frontend-libs"]
 	path = libs/geb-frontend-libs
-	url = C:/Users/vaing/Developer/geb-frontend-libs
+	url = https://github.com/jmurciag/geb-frontend-libs.git
 	branch = fase1/hub-peru-frontend
